@@ -3,13 +3,14 @@ package main
 import (
 	"flag"
 	"fmt"
-	"github.com/gorilla/websocket"
-	"github.com/prometheus/client_golang/prometheus"
-	"github.com/prometheus/client_golang/prometheus/promhttp"
 	"net/http"
 	"net/url"
 	"strings"
 	"time"
+
+	"github.com/gorilla/websocket"
+	"github.com/prometheus/client_golang/prometheus"
+	"github.com/prometheus/client_golang/prometheus/promhttp"
 )
 
 var (
@@ -61,7 +62,10 @@ func probeHandler(w http.ResponseWriter, r *http.Request) {
 
 	fmt.Printf("Probing %s with message %s and checkign if response contains %s\n", target, sendMessage, contain)
 
-	c, resp, errCon := websocket.DefaultDialer.Dial(u.String(), nil)
+	headers := http.Header{}
+	headers.Add("User-Agent", "websocket-exporter/0.1.0")
+
+	c, resp, errCon := websocket.DefaultDialer.Dial(u.String(), headers)
 
 	start := time.Now()
 	timeout := 5 * time.Second
